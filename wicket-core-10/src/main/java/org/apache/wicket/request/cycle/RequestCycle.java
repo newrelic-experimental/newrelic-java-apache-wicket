@@ -10,6 +10,7 @@ import org.apache.wicket.request.http.WebResponse;
 import com.newrelic.api.agent.NewRelic;
 import com.newrelic.api.agent.Trace;
 import com.newrelic.api.agent.Transaction;
+import com.newrelic.api.agent.TransportType;
 import com.newrelic.api.agent.weaver.Weave;
 import com.newrelic.api.agent.weaver.Weaver;
 import com.newrelic.instrumentation.labs.wicket.Utils;
@@ -28,7 +29,8 @@ public abstract class RequestCycle {
 		Request request = getRequest();
 		if (request instanceof WebRequest) {
 			WicketRequestHeaders headers = new WicketRequestHeaders((WebRequest) request);
-			transaction.insertDistributedTraceHeaders(headers);
+			transaction.acceptDistributedTraceHeaders(TransportType.HTTP, headers);
+
 			// Utils.setTransactionName((WebRequest) request);
 		}
 		NewRelic.getAgent().getTracedMethod().setMetricName("Custom", "Wicket", "RequestCycle",
