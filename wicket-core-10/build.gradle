@@ -1,0 +1,33 @@
+
+// Build.gradle generated for instrumentation module wicket-core-10
+
+apply plugin: 'java'
+
+dependencies {
+   // Declare a dependency on each JAR you want to instrument
+   // Example:
+  implementation 'org.apache.wicket:wicket-core:10.0.0'
+ implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+   // New Relic Java Agent dependencies
+   implementation 'com.newrelic.agent.java:newrelic-agent:6.4.0'
+   implementation 'com.newrelic.agent.java:newrelic-api:6.4.0'
+   implementation fileTree(include: ['*.jar'], dir: '../libs')
+   implementation fileTree(include: ['*.jar'], dir: '../test-lib')
+}
+
+jar {
+  manifest {
+    attributes 'Implementation-Title': 'com.newrelic.instrumentation.labs.wicket-core-10'
+    attributes 'Implementation-Vendor': 'New Relic Labs'
+    attributes 'Implementation-Vendor-Id': 'com.newrelic.labs'
+    attributes 'Implementation-Version': 1.0
+  }
+}
+
+verifyInstrumentation {
+passes 'org.apache.wicket:wicket-core:[10.0.0,)'
+
+   passes("org.apache.wicket:wicket-core:[10.0.0,)") {
+        compile 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    }
+}
