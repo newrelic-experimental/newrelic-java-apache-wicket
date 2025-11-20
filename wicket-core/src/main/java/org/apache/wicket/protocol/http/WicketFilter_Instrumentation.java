@@ -19,11 +19,11 @@ import javax.servlet.http.HttpServletRequest;
 
 public abstract class WicketFilter_Instrumentation {
 
-    protected abstract String getFilterPath(final HttpServletRequest request);
+    protected abstract String getFilterPath( HttpServletRequest request);
 
 	@Trace
-    boolean processRequest(ServletRequest request, final ServletResponse response,
-            final FilterChain chain) throws IOException, ServletException {
+    boolean processRequest(ServletRequest request,  ServletResponse response,
+             FilterChain chain) throws IOException, ServletException {
 
 		try {
 			if (request instanceof HttpServletRequest) {
