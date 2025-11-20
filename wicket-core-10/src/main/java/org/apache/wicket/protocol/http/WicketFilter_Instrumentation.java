@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.newrelic.api.agent.NewRelic;
 import com.newrelic.api.agent.Trace;
 import com.newrelic.api.agent.TransactionNamePriority;
+import com.newrelic.api.agent.weaver.MatchType;
 import com.newrelic.api.agent.weaver.Weave;
 import com.newrelic.api.agent.weaver.Weaver;
 
@@ -14,12 +15,16 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
-@Weave
-public abstract class WicketFilter {
+@Weave (originalName = "org.apache.wicket.protocol.http.WicketFilter", type = MatchType.BaseClass)
 
-	@Trace(dispatcher = true)
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-			throws IOException, ServletException {
+public abstract class WicketFilter_Instrumentation {
+
+    public abstract String getFilterPath();
+
+	@Trace
+    boolean processRequest(ServletRequest request, final ServletResponse response,
+            final FilterChain chain) throws IOException, ServletException {
+
 		try {
 			if (request instanceof HttpServletRequest) {
 				HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -32,8 +37,10 @@ public abstract class WicketFilter {
 			}
 
 			NewRelic.getAgent().getTracedMethod().setMetricName("Custom", "Wicket", "WicketFilter",
-					getClass().getSimpleName(), "doFilter");
-			Weaver.callOriginal();
+					getClass().getSimpleName(), "processRequest");
+
+            NewRelic.getAgent().getTracedMethod().addCustomAttribute("FilterPath", getFilterPath());
+			return Weaver.callOriginal();
 		} catch (Exception e) {
 			NewRelic.noticeError(e);
 			throw e;

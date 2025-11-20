@@ -1,5 +1,6 @@
 package org.apache.wicket;
 
+import com.newrelic.api.agent.weaver.MatchType;
 import org.apache.wicket.event.IEvent;
 
 import com.newrelic.api.agent.NewRelic;
@@ -7,27 +8,14 @@ import com.newrelic.api.agent.Trace;
 import com.newrelic.api.agent.weaver.Weave;
 import com.newrelic.api.agent.weaver.Weaver;
 
-@Weave
-public abstract class Component {
+@Weave(originalName = "org.apache.wicket.Component",type = MatchType.BaseClass)
+public abstract class Component_Instrumentation {
 
 	@Trace
-	protected void onInitialize() {
+    public final void render() {
 		NewRelic.getAgent().getTracedMethod().setMetricName("Custom", "Wicket", "Component", getClass().getSimpleName(),
-				"onInitialize");
-		Weaver.callOriginal();
-	}
+				"render");
 
-	@Trace
-	protected void onBeforeRender() {
-		NewRelic.getAgent().getTracedMethod().setMetricName("Custom", "Wicket", "Component", getClass().getSimpleName(),
-				"onBeforeRender");
-		Weaver.callOriginal();
-	}
-
-	@Trace
-	protected void onAfterRender() {
-		NewRelic.getAgent().getTracedMethod().setMetricName("Custom", "Wicket", "Component", getClass().getSimpleName(),
-				"onAfterRender");
 		Weaver.callOriginal();
 	}
 

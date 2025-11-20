@@ -1,2 +1,3 @@
 rootProject.name = 'java-instrumentation-template'
+include 'wicket-core'
 include 'wicket-core-10'
